@@ -65,7 +65,6 @@ def addDoc():
 
     return jsonify({'doctor': request.json}), 201
 
-print "lol"
 
 
 if __name__ == '__main__':
