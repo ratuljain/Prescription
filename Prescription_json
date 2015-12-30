@@ -1,0 +1,13 @@
+{
+  "Date" : "",
+  "Patient_Name": "",
+  "Doctor_Name": "",
+  "Medicines" : {
+    "Name1" : {
+    "Morning" : {"Take" : true ,"With_Food" : true, "time" : ""},
+    "Afternoon" : {"Take" : false ,"With_Food" : true, "time" : ""},
+    "Evening" : {"Take" : false ,"With_Food" : true, "time" : ""},
+    "Night" : {"Take" : true ,"With_Food" : true, "time" : ""}
+    }
+  }
+}
