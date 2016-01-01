@@ -1,11 +1,12 @@
 import itertools
+import json
 
+from bson import json_util
+import models
 from flask import Flask, jsonify, abort, make_response, request
+from jsonSchema import doctorSchema, patientSchema
 from jsonschema import validate
 from playhouse.shortcuts import *
-
-import models
-from jsonSchema import doctorSchema
 
 app = Flask(__name__)
 
@@ -38,14 +39,16 @@ def getDocList():
     l = []
     for i in every_doc_row:
         l.append(model_to_dict(i))
-    return jsonify({'doctors': l})
+    x = json.dumps(l, default=json_util.default)
+    return jsonify({'doctors': json.loads(x)})
 
 
 @app.route('/Prescription/api/v1.0/doctors/<int:doctor_id>', methods=['GET'])
 def getDoc(doctor_id):
     try:
         doc = models.Doctor.getDoctor(doctor_id)
-        return jsonify({'doctors': (model_to_dict(doc))})
+        x = json.dumps(model_to_dict(doc), default=json_util.default)
+        return jsonify({'doctors': json.loads(x)})
     except:
         abort(404)
 
@@ -65,8 +68,73 @@ def addDoc():
 
     return jsonify({'doctor': request.json}), 201
 
+@app.route('/Prescription/api/v1.0/patients', methods=['GET'])
+def getPatientList():
+    every_patient_row = models.Patient.getAllPatient()
 
+    l = []
+    for i in every_patient_row:
+        l.append(model_to_dict(i))
+    x = json.dumps(l, default=json_util.default)
+
+    return jsonify({'patients': json.loads(x)})
+
+@app.route('/Prescription/api/v1.0/patients/<int:patient_id>', methods=['GET'])
+def getPatient(patient_id):
+    try:
+        patient = models.Patient.getPatient(patient_id)
+        x = json.dumps(model_to_dict(patient), default=json_util.default)
+        return jsonify({'patients': json.loads(x)})
+    except:
+        abort(404)
+
+
+@app.route('/Prescription/api/v1.0/patients', methods=['POST'])
+def addPatient():
+
+    try:
+        validate(request.json, patientSchema)
+    except:
+        abort(400)
+
+    try:
+        models.Patient.addPatient(request.json)
+    except IntegrityError:
+        abort(409)
+
+    return jsonify({'patient': request.json}), 201
+
+
+@app.route('/Prescription/api/v1.0/prescription/all/<int:patient_id>', methods=['GET'])
+def getEveryPrescription(patient_id):
+    try:
+        prescription = models.Prescription.getEveryPrescription(patient_id)
+        x = json.dumps(prescription, default=json_util.default)
+        return jsonify({'Prescription': json.loads(x)})
+    except:
+        abort(404)
+
+
+@app.route('/Prescription/api/v1.0/prescription/<int:patient_id>', methods=['GET'])
+def getLatestPrescription(patient_id):
+    try:
+        prescription = models.Prescription.getLatestPrescription(patient_id)
+        x = json.dumps(prescription, default=json_util.default)
+        return jsonify({'Prescription': json.loads(x)})
+    except:
+        abort(404)
+
+
+@app.route('/Prescription/api/v1.0/prescription/<int:patient_id>', methods=['POST'])
+def addPrescription(patient_id):
+
+    try:
+        models.Prescription.addPrescription(patient_id, request.json)
+    except IntegrityError:
+        abort(400)
+
+    return jsonify({'Prescription': request.json}), 201
 
 if __name__ == '__main__':
-    # models.initialize()
+    models.initialize()
     app.run(debug=True)
