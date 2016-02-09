@@ -1,10 +1,7 @@
 import datetime
-
-import itertools
 import json
 
 from playhouse.shortcuts import *
-from SampleJSON import pres
 
 mysql_db = MySQLDatabase('Prescription', user='root')
 
@@ -118,16 +115,13 @@ class Prescription(MySQLModel):
     @classmethod
     def getLatestPrescription(cls, id):
         query = "SELECT max(id) FROM Prescription.prescription where patient_id_id = %s"
-        cursor = mysql_db.execute_sql(query, id)
+        cursor = mysql_db.execute_sql(query, str(id))
         latest_id = cursor.fetchall()[0][0]
 
         latest_prescription_row = Prescription.get(Prescription.id == latest_id)
         return model_to_dict(latest_prescription_row)
 
-
-
-print Prescription.getLatestPrescription(1)
-
+# print Prescription.getLatestPrescription(1)
 
 def initialize():
     mysql_db.connect()

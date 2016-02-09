@@ -33,6 +33,13 @@ def not_found(error):
     return make_response(jsonify({'error': 'Phone number already exists'}), 409)
 
 
+@app.route('/', methods=['GET'])
+def index():
+    return "Welcome to da API, mah lyf mah rulz"
+
+
+# gets json of every doctor in the table
+
 @app.route('/Prescription/api/v1.0/doctors', methods=['GET'])
 def getDocList():
     every_doc_row = models.Doctor.getAllDoctor()
@@ -42,6 +49,8 @@ def getDocList():
     x = json.dumps(l, default=json_util.default)
     return jsonify({'doctors': json.loads(x)})
 
+
+# gets json of a doctor with the provided id in the table
 
 @app.route('/Prescription/api/v1.0/doctors/<int:doctor_id>', methods=['GET'])
 def getDoc(doctor_id):
@@ -53,9 +62,10 @@ def getDoc(doctor_id):
         abort(404)
 
 
+# adds a doctor to the table if the input is given in a json
+
 @app.route('/Prescription/api/v1.0/doctors', methods=['POST'])
 def addDoc():
-
     try:
         validate(request.json, doctorSchema)
     except:
@@ -68,6 +78,13 @@ def addDoc():
 
     return jsonify({'doctor': request.json}), 201
 
+
+# gets json of every Patient in the table
+
+# curl -i -H "Content-Type: application/json" -X POST
+# -d '{  "first_name": "Saurabh",  "last_name": "Arora",  "phone_number": "9584365553"}'
+# http://127.0.0.1:5000/Prescription/api/v1.0/doctors
+
 @app.route('/Prescription/api/v1.0/patients', methods=['GET'])
 def getPatientList():
     every_patient_row = models.Patient.getAllPatient()
@@ -79,6 +96,10 @@ def getPatientList():
 
     return jsonify({'patients': json.loads(x)})
 
+
+# gets json of a patient with the provided id in the table
+
+
 @app.route('/Prescription/api/v1.0/patients/<int:patient_id>', methods=['GET'])
 def getPatient(patient_id):
     try:
@@ -89,9 +110,11 @@ def getPatient(patient_id):
         abort(404)
 
 
+# adds a patient to the table if the input is given in a json
+
+
 @app.route('/Prescription/api/v1.0/patients', methods=['POST'])
 def addPatient():
-
     try:
         validate(request.json, patientSchema)
     except:
@@ -105,6 +128,8 @@ def addPatient():
     return jsonify({'patient': request.json}), 201
 
 
+# gets a json of all prescriptions prescribed to a patient
+
 @app.route('/Prescription/api/v1.0/prescription/all/<int:patient_id>', methods=['GET'])
 def getEveryPrescription(patient_id):
     try:
@@ -114,6 +139,8 @@ def getEveryPrescription(patient_id):
     except:
         abort(404)
 
+
+# gets latest prescriptions prescribed to a patient
 
 @app.route('/Prescription/api/v1.0/prescription/<int:patient_id>', methods=['GET'])
 def getLatestPrescription(patient_id):
@@ -125,15 +152,19 @@ def getLatestPrescription(patient_id):
         abort(404)
 
 
+# adds a prescription to a patient
+
 @app.route('/Prescription/api/v1.0/prescription/<int:patient_id>', methods=['POST'])
 def addPrescription(patient_id):
-
     try:
-        models.Prescription.addPrescription(patient_id, request.json)
+        x = json.dumps(request.json)   #converting dict to a string, was
+                                       # being stored as a unicode and was not able to be parsed by JAVA
+        models.Prescription.addPrescription(patient_id, x)
     except IntegrityError:
         abort(400)
 
     return jsonify({'Prescription': request.json}), 201
+
 
 if __name__ == '__main__':
     models.initialize()
