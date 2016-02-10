@@ -10,6 +10,8 @@ from playhouse.shortcuts import *
 
 app = Flask(__name__)
 
+def date_handler(obj):
+    return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 def dictfetchall(cursor):
     """Returns all rows from a cursor as a list of dicts"""
@@ -134,7 +136,7 @@ def addPatient():
 def getEveryPrescription(patient_id):
     try:
         prescription = models.Prescription.getEveryPrescription(patient_id)
-        x = json.dumps(prescription, default=json_util.default)
+        x = json.dumps(prescription, default=date_handler)
         return jsonify({'Prescription': json.loads(x)})
     except:
         abort(404)
