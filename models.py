@@ -106,7 +106,7 @@ class Prescription(MySQLModel):
     def getEveryPrescription(cls, id):
         l = []
 
-        allPrescriptions = Prescription.select().where(Prescription.patient_id == id)
+        allPrescriptions = Prescription.select().where(Prescription.patient_id == id).order_by(Prescription.timestamp)
         for prescription in allPrescriptions:
             l.append(model_to_dict(prescription))
         listOfPrescriptionDict = l

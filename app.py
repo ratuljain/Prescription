@@ -48,7 +48,7 @@ def getDocList():
     l = []
     for i in every_doc_row:
         l.append(model_to_dict(i))
-    x = json.dumps(l, default=json_util.default)
+    x = json.dumps(l, default=date_handler)
     return jsonify({'doctors': json.loads(x)})
 
 
@@ -58,7 +58,7 @@ def getDocList():
 def getDoc(doctor_id):
     try:
         doc = models.Doctor.getDoctor(doctor_id)
-        x = json.dumps(model_to_dict(doc), default=json_util.default)
+        x = json.dumps(model_to_dict(doc), default=date_handler)
         return jsonify({'doctors': json.loads(x)})
     except:
         abort(404)
@@ -94,7 +94,7 @@ def getPatientList():
     l = []
     for i in every_patient_row:
         l.append(model_to_dict(i))
-    x = json.dumps(l, default=json_util.default)
+    x = json.dumps(l, default=date_handler)
 
     return jsonify({'patients': json.loads(x)})
 
@@ -106,7 +106,7 @@ def getPatientList():
 def getPatient(patient_id):
     try:
         patient = models.Patient.getPatient(patient_id)
-        x = json.dumps(model_to_dict(patient), default=json_util.default)
+        x = json.dumps(model_to_dict(patient), default=date_handler)
         return jsonify({'patients': json.loads(x)})
     except:
         abort(404)
@@ -148,7 +148,7 @@ def getEveryPrescription(patient_id):
 def getLatestPrescription(patient_id):
     try:
         prescription = models.Prescription.getLatestPrescription(patient_id)
-        x = json.dumps(prescription, default=json_util.default)
+        x = json.dumps(prescription, default=date_handler)
         return jsonify({'Prescription': json.loads(x)})
     except:
         abort(404)
