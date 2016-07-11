@@ -1,0 +1,33 @@
+@app.route('/', methods=['GET'])   
+
+@app.route('/Prescription/api/v1.0/doctors', methods=['GET'])
+
+@app.route('/Prescription/api/v1.0/doctors/<int:doctor_id>', methods=['GET'])
+
+@app.route('/Prescription/api/v1.0/doctors', methods=['POST'])
+ 
+@app.route('/Prescription/api/v1.0/patients', methods=['GET'])
+
+  
+@app.route('/Prescription/api/v1.0/patients/<int:patient_id>', methods=['GET'])
+
+@app.route('/Prescription/api/v1.0/patients', methods=['POST'])
+
+@app.route('/Prescription/api/v1.0/chemists', methods=['GET'])
+  
+@app.route('/Prescription/api/v1.0/chemists/<int:chemist_id>', methods=['GET'])
+
+@app.route('/Prescription/api/v1.0/chemists', methods=['POST'])
+
+@app.route('/Prescription/api/v1.0/prescription/all/<int:patient_id>', methods=['GET'])
+
+@app.route('/Prescription/api/v1.0/prescription/<int:patient_id>', methods=['GET'])
+
+@app.route('/Prescription/api/v1.0/prescription/<int:patient_id>', methods=['POST'])
+
+@app.route('/Prescription/api/v1.0/orders/chemist=<int:chemist_id>', methods=['GET'])
+
+@app.route('/Prescription/api/v1.0/orders/patient=<int:patient_id>', methods=['GET'])
+
+@app.route('/Prescription/api/v1.0/orders', methods=['POST'])
+
